@@ -1,2 +1,1 @@
-# ai-gpt-test
-GPT-TEST
+# ai-cv-analyzer

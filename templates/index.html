@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analise de CVs</title>
+    <link rel="stylesheet" href="static/css/style.css" />
+  </head>
+  <body>
+    <h1>Análise de CVs</h1>
+    <input type="file" id="file-input" multiple />
+    <div id="prompts">
+      <input
+        class="prompt-input"
+        type="text"
+        placeholder="Digite aqui a tecnologia para analisar no CV"
+      />
+    </div>
+    <button id="add-prompt-button">Adicionar Tecnologia</button>
+    <label for="job-description">Descrição da vaga:</label>
+    <textarea
+      id="job-description"
+      name="job-description"
+      rows="4"
+      cols="50"
+    ></textarea>
+    <button id="upload-button">Analisar CVs</button>
+    <div id="loading" style="display: none">Carregando...</div>
+    <div id="results"></div>
+    <script src="static/js/script.js"></script>
+  </body>
+</html>
