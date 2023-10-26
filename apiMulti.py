@@ -2,38 +2,49 @@ import os
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import openai
-import requests
 from pdfminer.high_level import extract_text
 from pdf2image import convert_from_path
 import pytesseract
-from PIL import Image
+import json
 
 app = Flask(__name__)
-
 CORS(app)
 
 # Chave Openai
-openai.api_key = ""
+# openai.api_key = os.getenv("OPENAI_API_KEY")
+# print(openai.api_key)
+# if openai.api_key is None:
+#     raise EnvironmentError("Sete a OPENAI_API_KEY como variavel de ambiente")
+f = open('key_openai.json')
+chave = json.load(f)
+openai.api_key = chave['api_key']
+
+
 
 def truncate_text(text, max_length):
-    if len(text) > max_length:
-        return text[:max_length]
-    return text
+    return text[:max_length] if len(text) > max_length else text
 
 
 def pdf_to_text_image(pdf_path):
-    images = convert_from_path(pdf_path)
+    try:
+        images = convert_from_path(pdf_path)
+    except Exception as e:
+        print(f"Error para converter pdf: {str(e)}")
+        return ""
     text = ""
-
     for image in images:
         text += pytesseract.image_to_string(image)
 
     return text
 
 def convert_pdf_to_txt(pdf_path):
-    text_based = extract_text(pdf_path)
-
+    try:
+        text_based = extract_text(pdf_path)
+    except Exception as e:
+        print(f"Error para converter pdf para texto: {str(e)}")
+        return ""
     # Verifica se o texto extraído está vazio, o que pode indicar que o PDF é baseado em imagem
+    
     if not text_based.strip():
         return pdf_to_text_image(pdf_path)
     else:
@@ -71,15 +82,17 @@ def upload_file():
                 {"role": "system", "content": f"Com base na descrição da vaga fornecida, analise o seguinte currículo para identificar se o candidato possui experiência na exata tecnologia: {prompt}. Retorne um “ok” se a pessoa atende aos requisitos ou um “não ok” se não atende. Descrição da vaga: {job_description}"},
                 {"role": "user", "content": f"{resume_text}"}
             ]
+            try:
+                response = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",
+                    messages=messages,
+                    temperature=0.3
+                )
 
-            response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=messages,
-                temperature=0.3
-            )
-
-            message = response['choices'][0]['message']['content']
-
+                message = response['choices'][0]['message']['content']
+            except Exception as e:
+                print(f"Erro OpenAI API: {str(e)}")
+                message = "Erro para processar o cv"
             # Check if the message indicates approval or rejection
             approval = "Reprovado" if "não ok" in message.lower() else "Aprovado"
 

@@ -1,0 +1,8 @@
+Flask==3.0.0
+Flask-Cors==4.0.0
+openai==0.28.1
+pdf2image==1.16.3
+pdfminer==20191125
+pdfminer.six==20221105
+Pillow==10.1.0
+pytesseract==0.3.10
