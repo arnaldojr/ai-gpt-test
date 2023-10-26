@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const resultsContainer = document.getElementById("results");
   const loadingContainer = document.getElementById("loading");
   const addPromptButton = document.getElementById("add-prompt-button");
+  
 
   uploadButton.addEventListener("click", () => {
     const formData = new FormData();

@@ -6,6 +6,12 @@ from pdfminer.high_level import extract_text
 from pdf2image import convert_from_path
 import pytesseract
 import json
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+logger.info("This is an info message")
 
 app = Flask(__name__)
 CORS(app)
